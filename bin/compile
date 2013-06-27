@@ -32,3 +32,6 @@ do
   fi
   $script_dir/$package $build_dir $cache_dir $version | indent
 done < $build_dir/.vendor-packages
+
+echo "-----> Pruning directories outside .heroku"
+find -H $build_dir -maxdepth 2 '(' -path './.heroku/vendor' -prune -o -name '.' ')' -o -exec rm -rf '{}' ';'
