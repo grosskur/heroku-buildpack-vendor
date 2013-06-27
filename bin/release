@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# fail fast
+set -o errexit
+set -o nounset
+set -o pipefail
+
+cat << EOF
+---
+default_process_types:
+  web: python -m SimpleHTTPServer
+EOF
