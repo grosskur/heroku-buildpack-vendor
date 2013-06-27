@@ -20,26 +20,25 @@ cache_dir="$2"
 version="$3"
 
 prefix=/app/.heroku/vendor
+destdir=/tmp/destdir
 package=openssl
 dir=$package-$version
 archive=$package-$version.tar.gz
 url=http://www.openssl.org/source/$archive
 
-openssl_version=1.0.1e
-c_ares_version=1.10.0
-curl_version=7.31.0
-
 echo "-----> Downloading $url"
 curl -L# "$url" > /tmp/$archive
 
 echo "-----> Extracting $archive"
-tar -C /tmp -xvf /tmp/$archive
+tar -C /tmp -xf /tmp/$archive
 
 pushd /tmp/$dir
 echo "-----> Building $dir"
 ./config shared zlib-dynamic --prefix=$prefix --openssldir=/etc/ssl
 env CFLAGS=-fPIC LIBS=-ldl make
-make INSTALL_PREFIX=/tmp/prefix install
-mkdir -p $build_dir/.heroku
-cp -a /tmp/prefix/app/.heroku/vendor $build_dir/.heroku/
+make INSTALL_PREFIX=$destdir install
+
+# Copy output files into place
+mkdir -p $build_dir/.heroku/vendor
+rsync -aHSx $destdir/app/.heroku/vendor/. $build_dir/.heroku/vendor/.
 popd
