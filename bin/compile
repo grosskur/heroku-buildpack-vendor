@@ -21,12 +21,22 @@ script_dir=$(dirname $0)/../scripts
 
 ccache=$build_dir/.heroku/vendor/bin/ccache
 ccache_version=3.1.9
+ccache_dir=$cache_dir/ccache
 
 # Set up ccache
-echo "-----> Building ccache-$ccache_version"
-$script_dir/ccache $build_dir $cache_dir $ccache_version
-mkdir -p $cache_dir/ccache
-export CCACHE_DIR=$cache_dir/ccache
+if [ -f $cache_dir/vendor/bin/ccache ]
+then
+  mkdir -p $build_dir/.heroku/vendor/bin
+  cp -p $cache_dir/vendor/bin/ccache $build_dir/.heroku/vendor/bin/ccache
+else
+  echo "-----> Building ccache-$ccache_version"
+  $script_dir/ccache $build_dir $cache_dir $ccache_version
+  mkdir -p $cache_dir/vendor/bin
+  cp -p $build_dir/.heroku/vendor/bin/ccache $cache_dir/vendor/bin/ccache
+fi
+
+mkdir -p $ccache_dir
+export CCACHE_DIR=$ccache_dir
 export CC="$ccache gcc"
 export CXX="$ccache g++"
 
