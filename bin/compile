@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# fail fast
+set -o errexit
+set -o nounset
+set -o pipefail
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+scriptname=$(basename $0)
+case $# in
+  2) :;;
+  *) echo "$scriptname: usage: $scriptname BUILD_DIR CACHE_DIR" >&2; exit 2;;
+esac
+
+build_dir="$1"
+cache_dir="$2"
+
+script_dir=$(dirname $0)/../scripts
+
+while read -r line
+do
+  package=$(echo $line | awk '{print $1}')
+  version=$(echo $line | awk '{print $2}')
+  if [ -x $script_dir/$package ]
+  then
+    echo "-----> Building $package-$version"
+    $script_dir/$package $build_dir $cache_dir $version | indent
+  fi
+done < $build_dir/.vendor-packages

@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# fail fast
+set -o errexit
+set -o nounset
+set -o pipefail
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+scriptname=$(basename $0)
+case $# in
+  3) :;;
+  *) echo "$scriptname: usage: $scriptname BUILD_DIR CACHE_DIR VERSION" >&2; exit 2;;
+esac
+
+build_dir="$1"
+cache_dir="$2"
+version="$3"
+
+prefix=/app/.heroku/vendor
+package=openssl
+dir=$package-$version
+archive=$package-$version.tar.gz
+url=http://www.openssl.org/source/$archive
+
+openssl_version=1.0.1e
+c_ares_version=1.10.0
+curl_version=7.31.0
+
+echo "-----> Downloading $url"
+curl -L# "$url" > /tmp/$archive
+
+echo "-----> Extracting $archive"
+tar -C /tmp -xvf /tmp/$archive
+
+pushd /tmp/$dir
+echo "-----> Building $dir"
+./config shared zlib-dynamic --prefix=$prefix --openssldir=/etc/ssl
+env CFLAGS=-fPIC LIBS=-ldl make
+make INSTALL_PREFIX=/tmp/prefix install
+mkdir -p /app/.heroku
+cp -a /tmp/prefix/app/.heroku/vendor /app/.heroku/
+popd
