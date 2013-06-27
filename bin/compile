@@ -17,8 +17,18 @@ esac
 
 build_dir="$1"
 cache_dir="$2"
-
 script_dir=$(dirname $0)/../scripts
+
+ccache=$build_dir/.heroku/vendor/bin/ccache
+ccache_version=3.1.9
+
+# Set up ccache
+echo "-----> Building ccache-$ccache_version"
+$script_dir/ccache $build_dir $cache_dir $ccache_version
+mkdir -p $cache_dir/ccache
+export CCACHE_DIR=$cache_dir/ccache
+export CC="$ccache gcc"
+export CXX="$ccache g++"
 
 while read -r line
 do
@@ -33,5 +43,6 @@ do
   $script_dir/$package $build_dir $cache_dir $version | indent
 done < $build_dir/.vendor-packages
 
-echo "-----> Pruning directories outside .heroku"
-find -H $build_dir -maxdepth 2 '(' -path './.heroku/vendor' -prune -o -name '.' ')' -o -exec rm -rf '{}' ';'
+#echo "-----> Pruning directories outside .heroku"
+#rm -f $build_dir/.vendor-packages
+#find $build_dir -maxdepth 2 '(' -path './.heroku/vendor' -prune -o -name "$build_dir" ')' -o -exec rm -rf '{}' ';'
