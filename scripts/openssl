@@ -40,6 +40,6 @@ echo "-----> Building $dir"
 ./config shared zlib-dynamic --prefix=$prefix --openssldir=/etc/ssl
 env CFLAGS=-fPIC LIBS=-ldl make
 make INSTALL_PREFIX=/tmp/prefix install
-mkdir -p /app/.heroku
-cp -a /tmp/prefix/app/.heroku/vendor /app/.heroku/
+mkdir -p $build_dir/.heroku
+cp -a /tmp/prefix/app/.heroku/vendor $build_dir/.heroku/
 popd
