@@ -24,9 +24,11 @@ while read -r line
 do
   package=$(echo $line | awk '{print $1}')
   version=$(echo $line | awk '{print $2}')
-  if [ -x $script_dir/$package ]
+  echo "-----> Building $package-$version"
+  if [ ! -f $script_dir/$package ]
   then
-    echo "-----> Building $package-$version"
-    $script_dir/$package $build_dir $cache_dir $version | indent
+    echo "Error: scripts/$package not found in buildpack" | indent
+    exit 1
   fi
+  $script_dir/$package $build_dir $cache_dir $version | indent
 done < $build_dir/.vendor-packages
