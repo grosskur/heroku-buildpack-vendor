@@ -46,7 +46,8 @@ tar -C /tmp -xf $archive_dir/$archive
 pushd /tmp/$dir
 echo "Building $dir"
 ./configure --prefix=$prefix --without-python
-env CPPFLAGS="-I$prefix/include/libxml2 $CPPFLAGS" make -j$num_cpu
+# If $build_dir is not /app we have to manually add the include path
+env CPPFLAGS="-I$build_dir/.heroku/vendor/include/libxml2 $CPPFLAGS" make -j$num_cpu
 make install DESTDIR=$dest_dir
 
 popd
