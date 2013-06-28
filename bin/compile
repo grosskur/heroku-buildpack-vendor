@@ -47,9 +47,6 @@ export LDFLAGS=-L$build_dir/.heroku/vendor/lib
 export LD_LIBRARY_PATH=$build_dir/.heroku/vendor/lib
 export PKG_CONFIG_PATH=$build_dir/.heroku/vendor/lib/pkg-config
 
-mkdir -p $cache_dir/packages
-mkdir -p $build_dir/.heroku/vendor
-
 while read -r line
 do
   package=$(echo $line | awk '{print $1}')
@@ -74,9 +71,11 @@ do
     rm -f $cache_dir/packages/vendor-$package-$version-*.tar.gz
 
     # Create new binary package
+    mkdir -p $cache_dir/packages
     tar -C $dest_dir/app/.heroku -czf $binary_archive.new vendor
     mv $binary_archive.new $binary_archive
   fi
+  mkdir -p $build_dir/.heroku
   echo "-----> Unpacking $(basename $binary_archive)"
   tar -C $build_dir/.heroku -xzf $binary_archive vendor
 done < $build_dir/.vendor-packages
