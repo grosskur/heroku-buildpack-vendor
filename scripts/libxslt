@@ -45,8 +45,8 @@ tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir
 echo "Building $dir"
-./configure --prefix=$prefix
-make -j$num_cpu
+./configure --prefix=$prefix --without-python
+env CPPFLAGS="-I$prefix/include/libxml2 $CPPFLAGS" make -j$num_cpu
 make install DESTDIR=$dest_dir
 
 popd
