@@ -29,11 +29,17 @@ dir=$package-$version
 archive=$package-$version.$extension
 url=$base_url/$archive
 
-echo "Downloading $url"
-curl -L# "$url" > /tmp/$archive
+mkdir -p $cache_dir/archives
+if [ ! -f $cache_dir/archives/$archive ]
+then
+  echo "Downloading $url"
+  rm -f $cache_dir/$archive.new
+  curl -L# "$url" > $cache_dir/$archive.new
+  mv $cache_dir/$archive.new $cache_dir/$archive
+fi
 
 echo "Extracting $archive"
-tar -C /tmp -xf /tmp/$archive
+tar -C /tmp -xf $cache_dir/$archive
 
 pushd /tmp/$dir
 echo "Building $dir"
