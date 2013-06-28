@@ -29,6 +29,7 @@ dir=$package-$version
 archive=$package-$version.$extension
 url=$base_url/$archive
 archive_dir=$cache_dir/archives
+num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
 
 mkdir -p $archive_dir
 if [ ! -f $archive_dir/$archive ]
@@ -45,6 +46,6 @@ tar -C /tmp -xf $archive_dir/$archive
 pushd /tmp/$dir
 echo "Building $dir"
 ./config shared zlib-dynamic --prefix=$prefix --openssldir=/etc/ssl
-env CFLAGS=-fPIC LIBS=-ldl make
+env CFLAGS=-fPIC LIBS=-ldl make -j$num_cpu
 make INSTALL_PREFIX=$dest_dir install_sw
 popd

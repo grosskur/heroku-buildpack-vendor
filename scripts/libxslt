@@ -29,6 +29,7 @@ dir=$package-$version
 archive=$package-$version.$extension
 url=$base_url/$archive
 archive_dir=$cache_dir/archives
+num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
 
 mkdir -p $archive_dir
 if [ ! -f $archive_dir/$archive ]
@@ -45,7 +46,7 @@ tar -C /tmp -xf $archive_dir/$archive
 pushd /tmp/$dir
 echo "Building $dir"
 ./configure --prefix=$prefix
-make
+make -j$num_cpu
 make install DESTDIR=$dest_dir
 
 popd
