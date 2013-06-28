@@ -18,27 +18,28 @@ esac
 build_dir="$1"
 cache_dir="$2"
 script_dir=$(dirname $0)/../scripts
+dest_dir=/tmp/dest_dir
 
-ccache=$build_dir/.heroku/vendor/bin/ccache
-ccache_version=3.1.9
-ccache_dir=$cache_dir/ccache
+#ccache=$build_dir/.heroku/vendor/bin/ccache
+#ccache_version=3.1.9
+#ccache_dir=$cache_dir/ccache
 
 # Set up ccache
-if [ -f $cache_dir/vendor/bin/ccache ]
-then
-  mkdir -p $build_dir/.heroku/vendor/bin
-  cp -p $cache_dir/vendor/bin/ccache $build_dir/.heroku/vendor/bin/ccache
-else
-  echo "-----> Building ccache-$ccache_version"
-  $script_dir/ccache $build_dir $cache_dir $ccache_version
-  mkdir -p $cache_dir/vendor/bin
-  cp -p $build_dir/.heroku/vendor/bin/ccache $cache_dir/vendor/bin/ccache
-fi
+#if [ -f $cache_dir/vendor/bin/ccache ]
+#then
+#  mkdir -p $build_dir/.heroku/vendor/bin
+#  cp -p $cache_dir/vendor/bin/ccache $build_dir/.heroku/vendor/bin/ccache
+#else
+#  echo "-----> Building ccache-$ccache_version"
+#  $script_dir/ccache $build_dir $cache_dir $ccache_version
+#  mkdir -p $cache_dir/vendor/bin
+#  cp -p $build_dir/.heroku/vendor/bin/ccache $cache_dir/vendor/bin/ccache
+#fi
 
-mkdir -p $ccache_dir
-export CCACHE_DIR=$ccache_dir
-export CC="$ccache gcc"
-export CXX="$ccache g++"
+#mkdir -p $ccache_dir
+#export CCACHE_DIR=$ccache_dir
+#export CC="$ccache gcc"
+#export CXX="$ccache g++"
 
 export PATH=$build_dir/.heroku/vendor/bin:$PATH
 export CPPFLAGS=-I$build_dir/.heroku/vendor/include
@@ -50,13 +51,27 @@ while read -r line
 do
   package=$(echo $line | awk '{print $1}')
   version=$(echo $line | awk '{print $2}')
-  echo "-----> Building $package-$version"
   if [ ! -f $script_dir/$package ]
   then
     echo "Error: scripts/$package not found in buildpack" | indent
     exit 1
   fi
-  $script_dir/$package $build_dir $cache_dir $version | indent
+  sha1sum=$(( cat $0; echo '--'; cat $script_dir/$package ) | sha1sum | awk '{print $1}')
+  binary_archive=$cache_dir/packages/vendor-$package-$version-$sha1sum.tar.gz
+  if [ ! -f $binary_archive ]
+  then
+    echo "-----> Building $package-$version"
+    $script_dir/$package $build_dir $cache_dir $dest_dir $version | indent
+    # Copy output files into place
+    mkdir -p $build_dir/.heroku/vendor $dest_dir
+    # Remove old binaries
+    rm -f $cache_dir/packages/vendor-$package-$version-*.tar.gz
+    # Store binaries
+    tar -C $dest_dir/app/.heroku -czf $binary_archive.new vendor
+    mv $binary_archive.new $binary_archive
+  fi
+  echo "-----> Unpacking $(basename $binary_archive)"
+  tar -C $build_dir/.heroku -xzf $binary_archive vendor
 done < $build_dir/.vendor-packages
 
 #echo "-----> Pruning directories outside .heroku"

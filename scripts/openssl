@@ -11,19 +11,19 @@ indent() {
 
 scriptname=$(basename $0)
 case $# in
-  3) :;;
-  *) echo "$scriptname: usage: $scriptname BUILD_DIR CACHE_DIR VERSION" >&2; exit 2;;
+  4) :;;
+  *) echo "$scriptname: usage: $scriptname BUILD_DIR CACHE_DIR DEST_DIR VERSION" >&2; exit 2;;
 esac
 
 build_dir="$1"
 cache_dir="$2"
-version="$3"
+dest_dir="$3"
+version="$4"
 
 base_url=http://www.openssl.org/source
 extension=tar.gz
 
 prefix=/app/.heroku/vendor
-destdir=/tmp/destdir
 package=$scriptname
 dir=$package-$version
 archive=$package-$version.$extension
@@ -45,9 +45,5 @@ pushd /tmp/$dir
 echo "Building $dir"
 ./config shared zlib-dynamic --prefix=$prefix --openssldir=/etc/ssl
 env CFLAGS=-fPIC LIBS=-ldl make
-make INSTALL_PREFIX=$destdir install_sw
-
-# Copy output files into place
-mkdir -p $build_dir/.heroku/vendor
-rsync -aHSx $destdir/app/.heroku/vendor/. $build_dir/.heroku/vendor/.
+make INSTALL_PREFIX=$dest_dir install_sw
 popd
