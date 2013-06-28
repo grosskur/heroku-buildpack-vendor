@@ -50,6 +50,8 @@ make -j$num_cpu
 make install DESTDIR=$dest_dir
 
 # Delete unnecessary docs
-rm -rf $dest_dir/app/.heroku/vendor/doc $dest_dir/app/.heroku/vendor/gtk-doc
+rm -rf $dest_dir/app/.heroku/vendor/share/man
+rm -rf $dest_dir/app/.heroku/vendor/share/doc
+rm -rf $dest_dir/app/.heroku/vendor/share/gtk-doc
 
 popd
