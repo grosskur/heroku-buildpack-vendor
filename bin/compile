@@ -40,6 +40,12 @@ export CCACHE_DIR=$ccache_dir
 export CC="$ccache gcc"
 export CXX="$ccache g++"
 
+export PATH=$build_dir/.heroku/vendor/bin:$PATH
+export CPPFLAGS=-I$build_dir/.heroku/vendor/include
+export LDFLAGS=-L$build_dir/.heroku/vendor/lib
+export LD_LIBRARY_PATH=$build_dir/.heroku/vendor/lib
+export PKG_CONFIG_PATH=$build_dir/.heroku/vendor/lib/pkg-config
+
 while read -r line
 do
   package=$(echo $line | awk '{print $1}')
