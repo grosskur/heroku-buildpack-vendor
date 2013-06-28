@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# fail fast
+set -o errexit
+set -o nounset
+set -o pipefail
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+scriptname=$(basename $0)
+case $# in
+  3) :;;
+  *) echo "$scriptname: usage: $scriptname BUILD_DIR CACHE_DIR VERSION" >&2; exit 2;;
+esac
+
+build_dir="$1"
+cache_dir="$2"
+version="$3"
+
+base_url=http://curl.haxx.se/download
+extension=tar.bz2
+
+prefix=/app/.heroku/vendor
+destdir=/tmp/destdir
+package=$scriptname
+dir=$package-$version
+archive=$package-$version.$extension
+url=$base_url/$archive
+
+echo "-----> Downloading $url"
+curl -L# "$url" > /tmp/$archive
+
+echo "-----> Extracting $archive"
+tar -C /tmp -xf /tmp/$archive
+
+pushd /tmp/$dir
+echo "-----> Building $dir"
+./configure --prefix=$prefix --without-gnutls --with-zlib --enable-ares --disable-ldap --disable-ldaps
+make
+make install DESTDIR=$destdir
+
+# Delete unnecessary man pages
+rm -rf $destdir/app/.heroku/vendor/share
+
+# Copy output files into place
+mkdir -p $build_dir/.heroku/vendor
+rsync -aHSx $destdir/app/.heroku/vendor/. $build_dir/.heroku/vendor/.
+popd
