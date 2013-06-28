@@ -19,24 +19,27 @@ build_dir="$1"
 cache_dir="$2"
 version="$3"
 
+base_url=http://www.openssl.org/source
+extension=tar.gz
+
 prefix=/app/.heroku/vendor
 destdir=/tmp/destdir
-package=openssl
+package=$scriptname
 dir=$package-$version
-archive=$package-$version.tar.gz
-url=http://www.openssl.org/source/$archive
+archive=$package-$version.$extension
+url=$base_url/$archive
 
-echo "-----> Downloading $url"
+echo "Downloading $url"
 curl -L# "$url" > /tmp/$archive
 
-echo "-----> Extracting $archive"
+echo "Extracting $archive"
 tar -C /tmp -xf /tmp/$archive
 
 pushd /tmp/$dir
-echo "-----> Building $dir"
+echo "Building $dir"
 ./config shared zlib-dynamic --prefix=$prefix --openssldir=/etc/ssl
 env CFLAGS=-fPIC LIBS=-ldl make
-make INSTALL_PREFIX=$destdir install
+make INSTALL_PREFIX=$destdir install_sw
 
 # Copy output files into place
 mkdir -p $build_dir/.heroku/vendor

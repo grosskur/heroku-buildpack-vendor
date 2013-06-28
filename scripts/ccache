@@ -26,14 +26,14 @@ dir=$package-$version
 archive=$package-$version.tar.bz2
 url=http://samba.org/ftp/ccache/$archive
 
-echo "-----> Downloading $url"
+echo "Downloading $url"
 curl -L# "$url" > /tmp/$archive
 
-echo "-----> Extracting $archive"
+echo "Extracting $archive"
 tar -C /tmp -xf /tmp/$archive
 
 pushd /tmp/$dir
-echo "-----> Building $dir"
+echo "Building $dir"
 ./configure --prefix=$prefix
 make
 make install DESTDIR=$destdir
