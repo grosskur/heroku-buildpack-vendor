@@ -67,6 +67,7 @@ do
     # Remove old binaries
     rm -f $cache_dir/packages/vendor-$package-$version-*.tar.gz
     # Store binaries
+    mkdir -p $cache_dir/packages
     tar -C $dest_dir/app/.heroku -czf $binary_archive.new vendor
     mv $binary_archive.new $binary_archive
   fi
