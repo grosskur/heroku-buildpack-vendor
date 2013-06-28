@@ -28,18 +28,19 @@ package=$scriptname
 dir=$package-$version
 archive=$package-$version.$extension
 url=$base_url/$archive
+archive_dir=$cache_dir/archives
 
-mkdir -p $cache_dir/archives
-if [ ! -f $cache_dir/archives/$archive ]
+mkdir -p $archive_dir
+if [ ! -f $archive_dir/$archive ]
 then
   echo "Downloading $url"
-  rm -f $cache_dir/$archive.new
-  curl -L# "$url" > $cache_dir/$archive.new
-  mv $cache_dir/$archive.new $cache_dir/$archive
+  rm -f $archive_dir/$archive.new
+  curl -L# "$url" > $archive_dir/$archive.new
+  mv $archive_dir/$archive.new $archive_dir/$archive
 fi
 
 echo "Extracting $archive"
-tar -C /tmp -xf $cache_dir/$archive
+tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir
 echo "Building $dir"
