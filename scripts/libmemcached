@@ -46,11 +46,14 @@ tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir
 echo "Building $dir"
-./configure --prefix=$prefix --without-memcached
 case $version in
   # XXX: https://bugs.launchpad.net/libmemcached/+bug/1164440
-  1.0.17) patch -p0 < $patch_dir/libmemcached-1.0.17-fix-without-memcached.patch;;
+  1.0.17)
+    echo "Applying patch: libmemcached-1.0.17-fix-without-memcached.patch"
+    patch -p0 < $patch_dir/libmemcached-1.0.17-fix-without-memcached.patch
+    ;;
 esac
+./configure --prefix=$prefix --without-memcached
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 
