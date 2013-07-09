@@ -30,6 +30,7 @@ archive=$package-$version.$extension
 url=$base_url/$package/$(echo $version | sed 's/\.[0-9]*$//')/$version/+download/$archive
 archive_dir=$cache_dir/archives
 num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
+patch_dir=$(dirname $0)/../patches
 
 mkdir -p $archive_dir
 if [ ! -f $archive_dir/$archive ]
@@ -46,6 +47,10 @@ tar -C /tmp -xf $archive_dir/$archive
 pushd /tmp/$dir
 echo "Building $dir"
 ./configure --prefix=$prefix --without-memcached
+case $version in
+  # XXX: https://bugs.launchpad.net/libmemcached/+bug/1164440
+  1.0.17) patch -p0 < $patch_dir/libmemcached-1.0.17-fix-without-memcached.patch;;
+esac
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 
