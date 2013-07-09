@@ -53,7 +53,7 @@ case $version in
     patch -p0 < $patch_dir/libmemcached-1.0.17-fix-without-memcached.patch
     ;;
 esac
-./configure --prefix=$prefix --without-memcached
+./configure --prefix=$prefix --without-memcached --enable-sasl
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 
