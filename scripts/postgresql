@@ -48,4 +48,5 @@ echo "Building $dir"
 ./configure --prefix=$prefix
 make -j$num_cpu
 make install DESTDIR=$dest_dir
+
 popd
