@@ -45,8 +45,7 @@ tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir
 echo "Building $dir"
-./configure --prefix=$prefix
+./configure --prefix=$prefix --with-openssl --with-ossp-uuid
 make -j$num_cpu
 make install DESTDIR=$dest_dir
-
 popd
