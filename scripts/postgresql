@@ -49,3 +49,9 @@ echo "Building $dir"
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 popd
+
+pushd /tmp/$dir/contrib
+echo "Building $dir/contrib"
+make -j$num_cpu
+make install DESTDIR=$dest_dir
+popd
