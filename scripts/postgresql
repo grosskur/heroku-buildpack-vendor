@@ -20,7 +20,7 @@ cache_dir="$2"
 dest_dir="$3"
 version="$4"
 
-base_url=http://www.postgresql.org/ftp/source
+base_url=http://ftp.postgresql.org/pub/source
 extension=tar.bz2
 
 prefix=/app/.heroku/vendor
