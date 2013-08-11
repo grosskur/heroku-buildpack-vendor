@@ -51,4 +51,5 @@ pushd /tmp/$dir
 echo "Building $dir"
 make -j$num_cpu PREFIX=$prefix TARGET=linux26 USE_OPENSSL=1 USE_PCRE=1 USE_PCRE_JIT=1 USE_TFO=1
 make install-bin PREFIX=$prefix DESTDIR=$dest_dir
+
 popd
