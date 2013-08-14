@@ -73,7 +73,7 @@ do
     | egrep '(executable|shared object)' \
     | grep ELF \
     | awk -F: '{print $1}' \
-    | xargs strip --strip-unneeded 2>/dev/null
+    | xargs strip --strip-unneeded
 
     # Remove old binary packages
     rm -f $cache_dir/packages/vendor-$package-$version-*.tar.gz
