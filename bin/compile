@@ -68,12 +68,12 @@ do
     $script_dir/$package $build_dir $cache_dir $dest_dir $version | indent
 
     # Strip executables and shared libraries
-    find $dest_dir/app/.heroku \
+    find $dest_dir/app/.heroku -type f \
     | xargs file \
     | egrep '(executable|shared object)' \
     | grep ELF \
     | awk -F: '{print $1}' \
-    | xargs strip --strip-unneeded
+    | xargs -I {} bash -c 'chmod u+w "{}"; strip --strip-unneeded "{}"'
 
     # Remove old binary packages
     rm -f $cache_dir/packages/vendor-$package-$version-*.tar.gz
