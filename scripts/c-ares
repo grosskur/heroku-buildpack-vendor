@@ -36,7 +36,7 @@ if [ ! -f $archive_dir/$archive ]
 then
   echo "Downloading $url"
   rm -f $archive_dir/$archive.new
-  curl -L# "$url" > $archive_dir/$archive.new
+  curl -fsLS "$url" > $archive_dir/$archive.new
   mv $archive_dir/$archive.new $archive_dir/$archive
 fi
 
