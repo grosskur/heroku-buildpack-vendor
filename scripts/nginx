@@ -134,8 +134,8 @@ pushd /tmp/$dir
 echo "Building $dir"
 ./configure \
   --prefix=$prefix \
-  --with-cc-opt="-I$prefix/include $CPPFLAGS" \
-  --with-ld-opt="-L$prefix/lib $LDFLAGS" \
+  --with-cc-opt="$CPPFLAGS" \
+  --with-ld-opt="$LDFLAGS" \
   --with-sha1=$prefix/include/openssl \
   --with-md5=$prefix/include/openssl \
   --conf-path=/etc/nginx/nginx.conf \
