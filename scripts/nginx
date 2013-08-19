@@ -106,7 +106,7 @@ mod_name=nginx-x-rid-header
 mod_version=master
 mod_extension=tar.gz
 mod_archive=$mod_name-$mod_version.$mod_extension
-mod_url=https://github.com/newobj/$mod_name/archive/$mod_version.$mod_extension
+mod_url=https://github.com/soundcloud/$mod_name/archive/$mod_version.$mod_extension
 if [ ! -f $archive_dir/$mod_archive ]
 then
   echo "Downloading $mod_url"
