@@ -117,6 +117,11 @@ fi
 echo "Extracting $mod_archive"
 tar -C /tmp -xf $archive_dir/$mod_archive
 
+if [ ! -f $prefix/include/ossp ]
+then
+  ln -s . $prefix/include/ossp
+fi
+
 #--with-cc-opt="$CPPFLAGS -I$prefix/include"
 #--with-ld-opt="$LDFLAGS -L$prefix/lib"
 #--with-http_dav_module
