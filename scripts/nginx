@@ -102,6 +102,21 @@ fi
 echo "Extracting $mod_archive"
 tar -C /tmp -xf $archive_dir/$mod_archive
 
+mod_name=nginx-x-rid-header
+mod_version=master
+mod_extension=tar.gz
+mod_archive=$mod_name-$mod_version.$mod_extension
+mod_url=https://github.com/newobj/$mod_name/archive/$mod_version.$mod_extension
+if [ ! -f $archive_dir/$mod_archive ]
+then
+  echo "Downloading $mod_url"
+  rm -f $archive_dir/$mod_archive.new
+  curl -fsLS "$mod_url" > $archive_dir/$mod_archive.new
+  mv $archive_dir/$mod_archive.new $archive_dir/$mod_archive
+fi
+echo "Extracting $mod_archive"
+tar -C /tmp -xf $archive_dir/$mod_archive
+
 #--with-cc-opt="$CPPFLAGS -I$prefix/include"
 #--with-ld-opt="$LDFLAGS -L$prefix/lib"
 #--with-http_dav_module
@@ -136,7 +151,8 @@ echo "Building $dir"
   --with-http_ssl_module \
   --with-http_sub_module \
   --add-module=/tmp/echo-nginx-module-0.46 \
-  --add-module=/tmp/nginx-upstream-fair-master
+  --add-module=/tmp/nginx-upstream-fair-master \
+  --add-module=/tmp/nginx-x-rid-header-master
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 
