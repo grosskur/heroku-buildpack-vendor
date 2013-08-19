@@ -1,6 +1,19 @@
---- uuid-1.6.2/Makefile.in.ossp~	2011-05-10 03:29:38.308621422 +0200
-+++ uuid-1.6.2/Makefile.in	2011-05-10 03:32:38.127373378 +0200
-@@ -62,13 +62,13 @@ PERL        = @PERL@
+diff -Naur uuid-1.6.2-orig/Makefile.PL uuid-1.6.2/Makefile.PL
+--- uuid-1.6.2-orig/Makefile.PL	2008-03-08 10:31:40.000000000 -0800
++++ uuid-1.6.2/Makefile.PL	2013-08-19 16:55:12.000000000 -0700
+@@ -44,7 +44,7 @@
+ all pure_all:
+ 	\@if [ ! -d build ]; then mkdir build; fi
+ 	\@if [ ! -f build/Makefile ]; then (cd build && ../configure --disable-shared); fi
+-	\@if [ ! -f build/libuuid.la ]; then (cd build && \$(MAKE) \$(MFLAGS) libuuid.la); fi
++	\@if [ ! -f build/libossp-uuid.la ]; then (cd build && \$(MAKE) \$(MFLAGS) libossp-uuid.la); fi
+ 	\@if [ ! -f perl/Makefile ]; then (cd perl && \$(PERL) Makefile.PL \$(ARGS)); fi
+ 	\@cd perl && \$(MAKE) \$(MFLAGS) \$\@
+ 
+diff -Naur uuid-1.6.2-orig/Makefile.in uuid-1.6.2/Makefile.in
+--- uuid-1.6.2-orig/Makefile.in	2008-03-08 10:31:40.000000000 -0800
++++ uuid-1.6.2/Makefile.in	2013-08-19 16:55:12.000000000 -0700
+@@ -62,13 +62,13 @@
  PHP         = @PHP@
  PG_CONFIG   = @PG_CONFIG@
  
@@ -17,7 +30,7 @@
  CXX_OBJS    = uuid++.lo $(LIB_OBJS)
  
  PRG_NAME    = uuid
-@@ -79,10 +79,10 @@ MAN_NAME    = uuid.3 uuid++.3 uuid.1
+@@ -79,10 +79,10 @@
  PERL_NAME   = $(S)/perl/blib/lib/OSSP/uuid.pm
  PERL_OBJS   = $(S)/perl/uuid.pm
  
@@ -30,7 +43,7 @@
  PGSQL_OBJS  = $(S)/pgsql/uuid.c
  
  TARGETS     = $(LIB_NAME) @DCE_NAME@ @CXX_NAME@ $(PRG_NAME) @PERL_NAME@ @PHP_NAME@ @PGSQL_NAME@
-@@ -231,7 +231,7 @@ install:
+@@ -231,7 +231,7 @@
  	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(mandir)/man1
  	$(SHTOOL) install -c -m 755 uuid-config $(DESTDIR)$(bindir)/
  	$(SHTOOL) install -c -m 644 $(S)/uuid-config.1 $(DESTDIR)$(mandir)/man1/
@@ -39,7 +52,7 @@
  	$(SHTOOL) install -c -m 644 uuid.h $(DESTDIR)$(includedir)/
  	-@if [ ".$(WITH_DCE)" = .yes ]; then \
  	    echo "$(SHTOOL) install -c -m 644 $(S)/uuid_dce.h $(DESTDIR)$(includedir)/"; \
-@@ -241,17 +241,17 @@ install:
+@@ -241,17 +241,17 @@
  	    echo "$(SHTOOL) install -c -m 644 $(S)/uuid++.hh $(DESTDIR)$(includedir)/"; \
  	    $(SHTOOL) install -c -m 644 $(S)/uuid++.hh $(DESTDIR)$(includedir)/; \
  	fi
@@ -63,7 +76,7 @@
  	fi
  	@$(LIBTOOL) --mode=install $(SHTOOL) install -c -s -m 755 uuid $(DESTDIR)$(bindir)/
  	$(SHTOOL) install -c -m 644 $(S)/uuid.1 $(DESTDIR)$(mandir)/man1/
-@@ -276,10 +276,10 @@ uninstall:
+@@ -276,10 +276,10 @@
  	-@if [ ".$(WITH_CXX)" = .yes ]; then \
  	    $(LIBTOOL) --mode=uninstall $(RM) $(DESTDIR)$(libdir)/$(CXX_NAME); \
  	fi
@@ -77,7 +90,7 @@
  	fi
  	-$(RM) $(DESTDIR)$(includedir)/uuid.h
  	-@if [ ".$(WITH_DCE)" = .yes ]; then \
-@@ -290,7 +290,7 @@ uninstall:
+@@ -290,7 +290,7 @@
  	    echo "$(RM) $(DESTDIR)$(includedir)/uuid++.hh"; \
  	    $(RM) $(DESTDIR)$(includedir)/uuid++.hh; \
  	fi
@@ -86,20 +99,10 @@
  	-$(RM) $(DESTDIR)$(mandir)/man1/uuid-config.1
  	-$(RM) $(DESTDIR)$(bindir)/uuid-config
  	-$(RMDIR) $(DESTDIR)$(mandir)/man1 >/dev/null 2>&1 || $(TRUE)
---- uuid-1.6.2/Makefile.PL.ossp~	2008-03-08 19:31:40.000000000 +0100
-+++ uuid-1.6.2/Makefile.PL	2011-05-10 03:29:38.314621347 +0200
-@@ -44,7 +44,7 @@ ARGS     = $ARGS
- all pure_all:
- 	\@if [ ! -d build ]; then mkdir build; fi
- 	\@if [ ! -f build/Makefile ]; then (cd build && ../configure --disable-shared); fi
--	\@if [ ! -f build/libuuid.la ]; then (cd build && \$(MAKE) \$(MFLAGS) libuuid.la); fi
-+	\@if [ ! -f build/libossp-uuid.la ]; then (cd build && \$(MAKE) \$(MFLAGS) libossp-uuid.la); fi
- 	\@if [ ! -f perl/Makefile ]; then (cd perl && \$(PERL) Makefile.PL \$(ARGS)); fi
- 	\@cd perl && \$(MAKE) \$(MFLAGS) \$\@
- 
---- uuid-1.6.2/perl/Makefile.PL.ossp~	2007-01-01 19:13:18.000000000 +0100
-+++ uuid-1.6.2/perl/Makefile.PL	2011-05-10 03:29:38.324621221 +0200
-@@ -33,9 +33,9 @@ use Config;
+diff -Naur uuid-1.6.2-orig/perl/Makefile.PL uuid-1.6.2/perl/Makefile.PL
+--- uuid-1.6.2-orig/perl/Makefile.PL	2007-01-01 10:13:18.000000000 -0800
++++ uuid-1.6.2/perl/Makefile.PL	2013-08-19 16:55:12.000000000 -0700
+@@ -33,9 +33,9 @@
  use ExtUtils::MakeMaker;
  
  #   determine source directory
@@ -112,7 +115,7 @@
  
  #   determine extra build options
  my $compat = 0;
-@@ -47,7 +47,7 @@ WriteMakefile(
+@@ -47,7 +47,7 @@
      VERSION_FROM      => 'uuid.pm',
      ABSTRACT_FROM     => 'uuid.pod',
      PREREQ_PM         => {},
@@ -121,9 +124,10 @@
      DEFINE            => '',
      INC               => "-I. -I$srcdir",
      PM                => { 'uuid.pm'   => '$(INST_LIBDIR)/uuid.pm',
---- uuid-1.6.2/pgsql/Makefile.ossp~	2006-11-20 20:26:27.000000000 +0100
-+++ uuid-1.6.2/pgsql/Makefile	2011-05-10 03:29:38.333621109 +0200
-@@ -18,13 +18,13 @@ POSTGRES          := $(shell $(PG_CONFIG
+diff -Naur uuid-1.6.2-orig/pgsql/Makefile uuid-1.6.2/pgsql/Makefile
+--- uuid-1.6.2-orig/pgsql/Makefile	2006-11-20 11:26:27.000000000 -0800
++++ uuid-1.6.2/pgsql/Makefile	2013-08-19 16:55:12.000000000 -0700
+@@ -18,13 +18,13 @@
  top_builddir      := $(dir $(PGXS))../..
  include           $(top_builddir)/src/Makefile.global
      
@@ -139,7 +143,7 @@
  SHLIB_LINK        += $(shell test $(shell uname -s) = FreeBSD && echo "-Wl,-Bsymbolic")
  SHLIB_LINK        += $(shell test $(shell uname -s) = Darwin && echo "-bundle_loader $(POSTGRES)")
  rpath             :=
-@@ -35,16 +35,14 @@ enable_shared     = yes
+@@ -35,16 +35,14 @@
  include           $(top_builddir)/src/Makefile.shlib
  
  uuid.sql: uuid.sql.in
@@ -159,20 +163,10 @@
  	-rm -f $(DESTDIR)$(datadir)/uuid.sql
  
  clean distclean: clean-lib
---- uuid-1.6.2/php/config.m4.ossp~	2011-05-10 03:29:38.311621386 +0200
-+++ uuid-1.6.2/php/config.m4	2011-05-10 03:29:38.334621097 +0200
-@@ -33,7 +33,7 @@ PHP_ARG_ENABLE(uuid, OSSP uuid module,
- if test "$PHP_UUID" != "no"; then
-     PHP_NEW_EXTENSION(uuid, uuid.c, $ext_shared)
-     AC_DEFINE(HAVE_UUID, 1, [Have OSSP uuid library])
--    PHP_ADD_LIBRARY([uuid],, UUID_SHARED_LIBADD)
-+    PHP_ADD_LIBRARY([ossp-uuid],, UUID_SHARED_LIBADD)
-     PHP_ADD_INCLUDE([..])
-     PHP_SUBST(UUID_SHARED_LIBADD)
-     LDFLAGS="$LDFLAGS -L../.libs"
---- uuid-1.6.2/php/Makefile.local.ossp~	2007-01-01 19:13:30.000000000 +0100
-+++ uuid-1.6.2/php/Makefile.local	2011-05-10 03:29:38.342620997 +0200
-@@ -48,7 +48,7 @@ install: build
+diff -Naur uuid-1.6.2-orig/php/Makefile.local uuid-1.6.2/php/Makefile.local
+--- uuid-1.6.2-orig/php/Makefile.local	2007-01-01 10:13:30.000000000 -0800
++++ uuid-1.6.2/php/Makefile.local	2013-08-19 16:55:12.000000000 -0700
+@@ -48,7 +48,7 @@
  	@version=`$(PHP)-config --version | sed -e 's;^\([0-9]\).*$$;\1;'`; extdir="$(EXTDIR)"; \
  	echo "installing PHP$$version API into $$extdir"; \
  	./build/shtool mkdir -f -p -m 755 $(DESTDIR)$$extdir; \
@@ -181,8 +175,21 @@
  	./build/shtool install -c -m 644 uuid.php$$version $(DESTDIR)$$extdir/uuid.php
  
  clean:
---- uuid-1.6.2/php/uuid.ts.ossp~	2007-01-01 19:13:33.000000000 +0100
-+++ uuid-1.6.2/php/uuid.ts	2011-05-10 03:29:38.350620897 +0200
+diff -Naur uuid-1.6.2-orig/php/config.m4 uuid-1.6.2/php/config.m4
+--- uuid-1.6.2-orig/php/config.m4	2007-05-19 12:26:56.000000000 -0700
++++ uuid-1.6.2/php/config.m4	2013-08-19 16:56:03.000000000 -0700
+@@ -34,7 +34,7 @@
+     PHP_NEW_EXTENSION(uuid, uuid.c, $ext_shared)
+     AC_DEFINE(HAVE_UUID, 1, [Have OSSP uuid library])
+     PHP_ADD_LIBPATH([..], )
+-    PHP_ADD_LIBRARY([uuid],, UUID_SHARED_LIBADD)
++    PHP_ADD_LIBRARY([ossp-uuid],, UUID_SHARED_LIBADD)
+     PHP_ADD_INCLUDE([..])
+     PHP_SUBST(UUID_SHARED_LIBADD)
+ 
+diff -Naur uuid-1.6.2-orig/php/uuid.ts uuid-1.6.2/php/uuid.ts
+--- uuid-1.6.2-orig/php/uuid.ts	2007-01-01 10:13:33.000000000 -0800
++++ uuid-1.6.2/php/uuid.ts	2013-08-19 16:55:12.000000000 -0700
 @@ -34,9 +34,9 @@
  
  $php_version = $argv[1];
@@ -195,9 +202,10 @@
  }
  
  print "++ loading PHP uuid.php${php_version} (high-level API)\n";
---- uuid-1.6.2/uuid-config.in.ossp~	2008-03-07 11:49:59.000000000 +0100
-+++ uuid-1.6.2/uuid-config.in	2011-05-10 03:29:38.351620885 +0200
-@@ -121,7 +121,7 @@ do
+diff -Naur uuid-1.6.2-orig/uuid-config.in uuid-1.6.2/uuid-config.in
+--- uuid-1.6.2-orig/uuid-config.in	2008-03-07 02:49:59.000000000 -0800
++++ uuid-1.6.2/uuid-config.in	2013-08-19 16:55:12.000000000 -0700
+@@ -121,7 +121,7 @@
              output_extra="$output_extra $uuid_ldflags"
              ;;
          --libs)
@@ -206,8 +214,9 @@
              output_extra="$output_extra $uuid_libs"
              ;;
          * )
---- uuid-1.6.2/uuid.pc.in.ossp~	2008-03-07 11:49:59.000000000 +0100
-+++ uuid-1.6.2/uuid.pc.in	2011-05-10 03:29:38.360620773 +0200
+diff -Naur uuid-1.6.2-orig/uuid.pc.in uuid-1.6.2/uuid.pc.in
+--- uuid-1.6.2-orig/uuid.pc.in	2008-03-07 02:49:59.000000000 -0800
++++ uuid-1.6.2/uuid.pc.in	2013-08-19 16:55:12.000000000 -0700
 @@ -28,15 +28,15 @@
  ##
  
