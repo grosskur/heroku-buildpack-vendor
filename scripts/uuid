@@ -45,7 +45,7 @@ fi
 echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
 
-for patch in patches
+for patch in $patches
 do
   echo "Applying patch: $patch"
   patch -p0 < $patch_dir/$patch
