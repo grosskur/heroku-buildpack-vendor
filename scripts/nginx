@@ -117,6 +117,11 @@ fi
 echo "Extracting $mod_archive"
 tar -C /tmp -xf $archive_dir/$mod_archive
 
+if [ ! -f $prefix/include/ossp ]
+then
+  ln -s . $prefix/include/ossp
+fi
+
 #--with-cc-opt="$CPPFLAGS -I$prefix/include"
 #--with-ld-opt="$LDFLAGS -L$prefix/lib"
 #--with-http_dav_module
@@ -130,7 +135,7 @@ echo "Building $dir"
 ./configure \
   --prefix=$prefix \
   --with-cc-opt="-I$prefix/include $CPPFLAGS" \
-  --with-ld-opt="-I$prefix/lib $LDFLAGS" \
+  --with-ld-opt="-L$prefix/lib $LDFLAGS" \
   --with-sha1=$prefix/include/openssl \
   --with-md5=$prefix/include/openssl \
   --conf-path=/etc/nginx/nginx.conf \
