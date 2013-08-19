@@ -1,0 +1,109 @@
+#!/bin/bash
+
+# fail fast
+set -o errexit
+set -o nounset
+set -o pipefail
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+scriptname=$(basename $0)
+case $# in
+  4) :;;
+  *) echo "$scriptname: usage: $scriptname BUILD_DIR CACHE_DIR DEST_DIR VERSION" >&2; exit 2;;
+esac
+
+build_dir="$1"
+cache_dir="$2"
+dest_dir="$3"
+version="$4"
+
+base_url=http://nginx.org/download
+extension=tar.gz
+
+prefix=/app/.heroku/vendor
+package=$scriptname
+dir=$package-$version
+archive=$package-$version.$extension
+url=$base_url/$archive
+archive_dir=$cache_dir/archives
+num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
+
+mkdir -p $archive_dir
+if [ ! -f $archive_dir/$archive ]
+then
+  echo "Downloading $url"
+  rm -f $archive_dir/$archive.new
+  curl -fsLS "$url" > $archive_dir/$archive.new
+  mv $archive_dir/$archive.new $archive_dir/$archive
+fi
+echo "Extracting $archive"
+tar -C /tmp -xf $archive_dir/$archive
+
+mod_name=echo-nginx-module
+mod_version=0.46
+mod_extension=tar.gz
+mod_archive=$mod_name-$mod_version.$mod_extension
+mod_url=https://github.com/agentzh/$mod_name/archive/v$mod_version.$mod_extension
+if [ ! -f $archive_dir/$mod_archive ]
+then
+  echo "Downloading $mod_url"
+  rm -f $archive_dir/$mod_archive.new
+  curl -fsLS "$mod_url" > $archive_dir/$mod_archive.new
+  mv $archive_dir/$mod_archive.new $archive_dir/$mod_archive
+fi
+echo "Extracting $mod_archive"
+tar -C /tmp -xvf $archive_dir/$mod_archive
+
+mod_name=nginx-upstream-fair
+mod_version=master
+mod_extension=tar.gz
+mod_archive=$mod_name-$mod_version.$mod_extension
+mod_url=https://github.com/gnosek/$mod_name/archive/$mod_version.$mod_extension
+if [ ! -f $archive_dir/$mod_archive ]
+then
+  echo "Downloading $mod_url"
+  rm -f $archive_dir/$mod_archive.new
+  curl -fsLS "$mod_url" > $archive_dir/$mod_archive.new
+  mv $archive_dir/$mod_archive.new $archive_dir/$mod_archive
+fi
+echo "Extracting $mod_archive"
+tar -C /tmp -xvf $archive_dir/$mod_archive
+
+pushd /tmp/$dir
+echo "Building $dir"
+./configure \
+  --prefix=$prefix \
+  --conf-path=/etc/nginx/nginx.conf \
+  --error-log-path=/var/log/nginx/error.log \
+  --http-client-body-temp-path=/var/lib/nginx/body \
+  --http-fastcgi-temp-path=/var/lib/nginx/fastcgi \
+  --http-log-path=/var/log/nginx/access.log \
+  --http-proxy-temp-path=/var/lib/nginx/proxy \
+  --http-scgi-temp-path=/var/lib/nginx/scgi \
+  --http-uwsgi-temp-path=/var/lib/nginx/uwsgi \
+  --lock-path=/var/lock/nginx.lock \
+  --pid-path=/var/run/nginx.pid \
+  --with-debug \
+  --with-http_addition_module \
+  #--with-http_dav_module \
+  #--with-http_geoip_module \
+  --with-http_gzip_static_module \
+  --with-http_realip_module \
+  --with-http_stub_status_module \
+  --with-http_ssl_module \
+  --with-http_sub_module \
+  #--with-http_xslt_module \
+  --with-pcre=$prefix \
+  --with-sha1=$prefix/include/openssl \
+  --with-md5=$prefix/include/openssl \
+  --add-module=/tmp/echo-nginx-module-0.46 \
+  --add-module=/tmp/nginx-upstream-fair-master
+make -j$num_cpu
+make install DESTDIR=$dest_dir
+
+# Delete unnecessary man pages
+#rm -rf $dest_dir/app/.heroku/vendor/share
+popd
