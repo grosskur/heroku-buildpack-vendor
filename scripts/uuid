@@ -30,6 +30,8 @@ archive=$package-$version.$extension
 url=$base_url/$archive
 archive_dir=$cache_dir/archives
 num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
+patch_dir=$(dirname $0)/../patches
+patches=uuid-1.6.2-ossp.patch
 
 mkdir -p $archive_dir
 if [ ! -f $archive_dir/$archive ]
@@ -42,6 +44,12 @@ fi
 
 echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
+
+for patch in patches
+do
+  echo "Applying patch: $patch"
+  patch -p0 < $patch_dir/$patch
+done
 
 pushd /tmp/$dir
 echo "Building $dir"
