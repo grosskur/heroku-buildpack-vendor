@@ -42,6 +42,36 @@ fi
 echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
 
+#dep_name=pcre
+#dep_version=8.33
+#dep_extension=tar.gz
+#dep_archive=$dep_name-$dep_version.$dep_extension
+#dep_url=http://iweb.dl.sourceforge.net/project/$dep_name/$dep_name/$dep_version/$dep_archive
+#if [ ! -f $archive_dir/$dep_archive ]
+#then
+#  echo "Downloading $dep_url"
+#  rm -f $archive_dir/$dep_archive.new
+#  curl -fsLS "$dep_url" > $archive_dir/$dep_archive.new
+#  mv $archive_dir/$dep_archive.new $archive_dir/$dep_archive
+#fi
+#echo "Extracting $dep_archive"
+#tar -C /tmp -xf $archive_dir/$dep_archive
+
+#dep_name=openssl
+#dep_version=1.0.1e
+#dep_extension=tar.gz
+#dep_archive=$dep_name-$dep_version.$dep_extension
+#dep_url=http://www.openssl.org/source/$dep_archive
+#if [ ! -f $archive_dir/$dep_archive ]
+#then
+#  echo "Downloading $dep_url"
+#  rm -f $archive_dir/$dep_archive.new
+#  curl -fsLS "$dep_url" > $archive_dir/$dep_archive.new
+#  mv $archive_dir/$dep_archive.new $archive_dir/$dep_archive
+#fi
+#echo "Extracting $dep_archive"
+#tar -C /tmp -xf $archive_dir/$dep_archive
+
 mod_name=echo-nginx-module
 mod_version=0.46
 mod_extension=tar.gz
@@ -55,7 +85,7 @@ then
   mv $archive_dir/$mod_archive.new $archive_dir/$mod_archive
 fi
 echo "Extracting $mod_archive"
-tar -C /tmp -xvf $archive_dir/$mod_archive
+tar -C /tmp -xf $archive_dir/$mod_archive
 
 mod_name=nginx-upstream-fair
 mod_version=master
@@ -70,12 +100,24 @@ then
   mv $archive_dir/$mod_archive.new $archive_dir/$mod_archive
 fi
 echo "Extracting $mod_archive"
-tar -C /tmp -xvf $archive_dir/$mod_archive
+tar -C /tmp -xf $archive_dir/$mod_archive
+
+#--with-cc-opt="$CPPFLAGS -I$prefix/include"
+#--with-ld-opt="$LDFLAGS -L$prefix/lib"
+#--with-http_dav_module
+#--with-http_geoip_module
+#--with-http_xslt_module
+#--with-pcre=/tmp/pcre-8.33 \
+#--with-openssl=/tmp/openssl-1.0.1e \
 
 pushd /tmp/$dir
 echo "Building $dir"
 ./configure \
   --prefix=$prefix \
+  --with-cc-opt="-I$prefix/include $CPPFLAGS" \
+  --with-ld-opt="-I$prefix/lib $LDFLAGS" \
+  --with-sha1=$prefix/include/openssl \
+  --with-md5=$prefix/include/openssl \
   --conf-path=/etc/nginx/nginx.conf \
   --error-log-path=/var/log/nginx/error.log \
   --http-client-body-temp-path=/var/lib/nginx/body \
@@ -88,17 +130,11 @@ echo "Building $dir"
   --pid-path=/var/run/nginx.pid \
   --with-debug \
   --with-http_addition_module \
-  #--with-http_dav_module \
-  #--with-http_geoip_module \
   --with-http_gzip_static_module \
   --with-http_realip_module \
   --with-http_stub_status_module \
   --with-http_ssl_module \
   --with-http_sub_module \
-  #--with-http_xslt_module \
-  --with-pcre=$prefix \
-  --with-sha1=$prefix/include/openssl \
-  --with-md5=$prefix/include/openssl \
   --add-module=/tmp/echo-nginx-module-0.46 \
   --add-module=/tmp/nginx-upstream-fair-master
 make -j$num_cpu
