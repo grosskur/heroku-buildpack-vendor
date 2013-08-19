@@ -45,13 +45,13 @@ fi
 echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
 
+pushd /tmp/$dir
 for patch in $patches
 do
   echo "Applying patch: $patch"
-  patch -p0 < $patch_dir/$patch
+  patch -p1 < $patch_dir/$patch
 done
 
-pushd /tmp/$dir
 echo "Building $dir"
 ./configure --prefix=$prefix
 make -j$num_cpu
