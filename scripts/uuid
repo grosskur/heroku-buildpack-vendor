@@ -20,7 +20,7 @@ cache_dir="$2"
 dest_dir="$3"
 version="$4"
 
-base_url=ftp://ftp.ossp.org/pkg/lib/uuid
+base_url=http://s3.amazonaws.com/cb-misc
 extension=tar.gz
 
 prefix=/app/.heroku/vendor
