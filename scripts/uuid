@@ -53,7 +53,7 @@ do
 done
 
 echo "Building $dir"
-./configure --prefix=$prefix
+./configure --prefix=$prefix --includedir=$prefix/include/ossp
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 
