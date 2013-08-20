@@ -30,6 +30,9 @@ archive=$package-$version.$extension
 url=$base_url/$package/$archive
 archive_dir=$cache_dir/archives
 num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
+patch_dir=$(dirname $0)/../patches
+patches=uuid-1.6.2-ossp.patch
+patch=cyrus-sasl-2.1.26-missing-size_t.patch
 
 mkdir -p $archive_dir
 if [ ! -f $archive_dir/$archive ]
@@ -44,6 +47,13 @@ echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir
+case "$version" in
+  2.1.26)
+    echo "Applying patch: $patch"
+    patch -p1 < $patch_dir/$patch
+    ;;
+esac
+
 echo "Building $dir"
 ./configure --prefix=$prefix --with-plugindir=$prefix/lib/sasl2
 make -j$num_cpu
