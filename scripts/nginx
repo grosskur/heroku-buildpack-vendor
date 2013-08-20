@@ -127,27 +127,28 @@ fi
 #--with-http_dav_module
 #--with-http_geoip_module
 #--with-http_xslt_module
-#--with-pcre=/tmp/pcre-8.33 \
-#--with-openssl=/tmp/openssl-1.0.1e \
+#--with-pcre=/tmp/pcre-8.33
+#--with-openssl=/tmp/openssl-1.0.1e
+#--conf-path=/etc/nginx/nginx.conf
+#--error-log-path=/var/log/nginx/error.log
+#--lock-path=/var/lock/nginx.lock
+#--pid-path=/var/run/nginx.pid
+#--http-client-body-temp-path=/var/lib/nginx/body
+#--http-fastcgi-temp-path=/var/lib/nginx/fastcgi
+#--http-log-path=/var/log/nginx/access.log
+#--http-proxy-temp-path=/var/lib/nginx/proxy
+#--http-scgi-temp-path=/var/lib/nginx/scgi
+#--http-uwsgi-temp-path=/var/lib/nginx/uwsgi
 
 pushd /tmp/$dir
 echo "Building $dir"
 ./configure \
-  --prefix=$prefix \
+  --prefix=/state/nginx \
+  --sbin-path=$prefix/sbin/nginx \
   --with-cc-opt="$CPPFLAGS" \
   --with-ld-opt="$LDFLAGS" \
   --with-sha1=$prefix/include/openssl \
   --with-md5=$prefix/include/openssl \
-  --conf-path=/etc/nginx/nginx.conf \
-  --error-log-path=/var/log/nginx/error.log \
-  --http-client-body-temp-path=/var/lib/nginx/body \
-  --http-fastcgi-temp-path=/var/lib/nginx/fastcgi \
-  --http-log-path=/var/log/nginx/access.log \
-  --http-proxy-temp-path=/var/lib/nginx/proxy \
-  --http-scgi-temp-path=/var/lib/nginx/scgi \
-  --http-uwsgi-temp-path=/var/lib/nginx/uwsgi \
-  --lock-path=/var/lock/nginx.lock \
-  --pid-path=/var/run/nginx.pid \
   --with-debug \
   --with-http_addition_module \
   --with-http_gzip_static_module \
