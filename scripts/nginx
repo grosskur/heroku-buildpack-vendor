@@ -31,114 +31,52 @@ url=$base_url/$archive
 archive_dir=$cache_dir/archives
 num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
 
+download() {
+  url_="$1"
+  archive_="$2"
+  if [ ! -f $archive_dir/$archive_ ]
+  then
+    echo "Downloading $url_"
+    rm -f $archive_dir/$archive_.new
+    curl -fsLS "$url_" > $archive_dir/$archive_.new
+    mv $archive_dir/$archive_.new $archive_dir/$archive_
+  fi
+}
+
+extract() {
+  dir_="$1"
+  archive_="$2"
+  echo "Extracting $dir_"
+  tar -C $dir_ -xf $archive_dir/$archive_
+}
+
 mkdir -p $archive_dir
-if [ ! -f $archive_dir/$archive ]
-then
-  echo "Downloading $url"
-  rm -f $archive_dir/$archive.new
-  curl -fsLS "$url" > $archive_dir/$archive.new
-  mv $archive_dir/$archive.new $archive_dir/$archive
-fi
-echo "Extracting $archive"
-tar -C /tmp -xf $archive_dir/$archive
-
-#dep_name=pcre
-#dep_version=8.33
-#dep_extension=tar.gz
-#dep_archive=$dep_name-$dep_version.$dep_extension
-#dep_url=http://iweb.dl.sourceforge.net/project/$dep_name/$dep_name/$dep_version/$dep_archive
-#if [ ! -f $archive_dir/$dep_archive ]
-#then
-#  echo "Downloading $dep_url"
-#  rm -f $archive_dir/$dep_archive.new
-#  curl -fsLS "$dep_url" > $archive_dir/$dep_archive.new
-#  mv $archive_dir/$dep_archive.new $archive_dir/$dep_archive
-#fi
-#echo "Extracting $dep_archive"
-#tar -C /tmp -xf $archive_dir/$dep_archive
-
-#dep_name=openssl
-#dep_version=1.0.1e
-#dep_extension=tar.gz
-#dep_archive=$dep_name-$dep_version.$dep_extension
-#dep_url=http://www.openssl.org/source/$dep_archive
-#if [ ! -f $archive_dir/$dep_archive ]
-#then
-#  echo "Downloading $dep_url"
-#  rm -f $archive_dir/$dep_archive.new
-#  curl -fsLS "$dep_url" > $archive_dir/$dep_archive.new
-#  mv $archive_dir/$dep_archive.new $archive_dir/$dep_archive
-#fi
-#echo "Extracting $dep_archive"
-#tar -C /tmp -xf $archive_dir/$dep_archive
+download $url $archive
+extract /tmp $archive
 
 mod_name=echo-nginx-module
 mod_version=0.46
 mod_extension=tar.gz
 mod_archive=$mod_name-$mod_version.$mod_extension
 mod_url=https://github.com/agentzh/$mod_name/archive/v$mod_version.$mod_extension
-if [ ! -f $archive_dir/$mod_archive ]
-then
-  echo "Downloading $mod_url"
-  rm -f $archive_dir/$mod_archive.new
-  curl -fsLS "$mod_url" > $archive_dir/$mod_archive.new
-  mv $archive_dir/$mod_archive.new $archive_dir/$mod_archive
-fi
-echo "Extracting $mod_archive"
-tar -C /tmp -xf $archive_dir/$mod_archive
+download $mod_url $mod_archive
+extract /tmp $mod_archive
 
 mod_name=nginx-upstream-fair
 mod_version=master
 mod_extension=tar.gz
 mod_archive=$mod_name-$mod_version.$mod_extension
 mod_url=https://github.com/gnosek/$mod_name/archive/$mod_version.$mod_extension
-if [ ! -f $archive_dir/$mod_archive ]
-then
-  echo "Downloading $mod_url"
-  rm -f $archive_dir/$mod_archive.new
-  curl -fsLS "$mod_url" > $archive_dir/$mod_archive.new
-  mv $archive_dir/$mod_archive.new $archive_dir/$mod_archive
-fi
-echo "Extracting $mod_archive"
-tar -C /tmp -xf $archive_dir/$mod_archive
+download $mod_url $mod_archive
+extract /tmp $mod_archive
 
 mod_name=nginx-x-rid-header
 mod_version=master
 mod_extension=tar.gz
 mod_archive=$mod_name-$mod_version.$mod_extension
 mod_url=https://github.com/soundcloud/$mod_name/archive/$mod_version.$mod_extension
-if [ ! -f $archive_dir/$mod_archive ]
-then
-  echo "Downloading $mod_url"
-  rm -f $archive_dir/$mod_archive.new
-  curl -fsLS "$mod_url" > $archive_dir/$mod_archive.new
-  mv $archive_dir/$mod_archive.new $archive_dir/$mod_archive
-fi
-echo "Extracting $mod_archive"
-tar -C /tmp -xf $archive_dir/$mod_archive
-
-if [ ! -f $prefix/include/ossp ]
-then
-  ln -s . $prefix/include/ossp
-fi
-
-#--with-cc-opt="$CPPFLAGS -I$prefix/include"
-#--with-ld-opt="$LDFLAGS -L$prefix/lib"
-#--with-http_dav_module
-#--with-http_geoip_module
-#--with-http_xslt_module
-#--with-pcre=/tmp/pcre-8.33
-#--with-openssl=/tmp/openssl-1.0.1e
-#--conf-path=/etc/nginx/nginx.conf
-#--error-log-path=/var/log/nginx/error.log
-#--lock-path=/var/lock/nginx.lock
-#--pid-path=/var/run/nginx.pid
-#--http-client-body-temp-path=/var/lib/nginx/body
-#--http-fastcgi-temp-path=/var/lib/nginx/fastcgi
-#--http-log-path=/var/log/nginx/access.log
-#--http-proxy-temp-path=/var/lib/nginx/proxy
-#--http-scgi-temp-path=/var/lib/nginx/scgi
-#--http-uwsgi-temp-path=/var/lib/nginx/uwsgi
+download $mod_url $mod_archive
+extract /tmp $mod_archive
 
 pushd /tmp/$dir
 echo "Building $dir"
