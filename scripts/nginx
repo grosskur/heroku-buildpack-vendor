@@ -160,8 +160,6 @@ echo "Building $dir"
   --add-module=/tmp/nginx-upstream-fair-master \
   --add-module=/tmp/nginx-x-rid-header-master
 make -j$num_cpu
-make install DESTDIR=$dest_dir
-
-# Delete unnecessary man pages
-#rm -rf $dest_dir/app/.heroku/vendor/share
+mkdir -p ${dest_dir}$prefix/sbin
+install -m0755 objs/nginx ${dest_dir}$prefix/sbin
 popd
