@@ -78,6 +78,22 @@ mod_url=https://github.com/soundcloud/$mod_name/archive/$mod_version.$mod_extens
 download $mod_url $mod_archive
 extract /tmp $mod_archive
 
+mod_name=ngx_pagespeed
+mod_version=release-1.6.29.5-beta
+mod_extension=tar.gz
+mod_archive=$mod_name-$mod_version.$mod_extension
+mod_url=https://github.com/pagespeed/$mod_name/archive/$mod_version.$mod_extension
+download $mod_url $mod_archive
+extract /tmp $mod_archive
+
+dep_name=psol
+dep_version=1.6.29.5
+dep_extension=tar.gz
+dep_archive=$dep_name-$dep_version.$dep_extension
+dep_url=https://dl.google.com/dl/page-speed/$dep_name/$dep_version.$dep_extension
+download $dep_url $dep_archive
+extract /tmp/ngx_pagespeed-release-1.6.29.5-beta $dep_archive
+
 pushd /tmp/$dir
 echo "Building $dir"
 ./configure \
@@ -97,7 +113,8 @@ echo "Building $dir"
   --with-http_sub_module \
   --add-module=/tmp/echo-nginx-module-0.46 \
   --add-module=/tmp/nginx-upstream-fair-master \
-  --add-module=/tmp/nginx-x-rid-header-master
+  --add-module=/tmp/nginx-x-rid-header-master \
+  --add-module=/tmp/ngx_pagespeed-release-1.6.29.5-beta
 make -j$num_cpu
 mkdir -p ${dest_dir}$prefix/sbin
 install -m0755 objs/nginx ${dest_dir}$prefix/sbin
