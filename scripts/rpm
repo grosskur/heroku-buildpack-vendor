@@ -21,7 +21,7 @@ dest_dir="$3"
 version="$4"
 
 version_x=$(echo $version | sed 's/\.[0-9]*$/.x/')
-base_url=http://rpm.org/releases/$version_x
+base_url=http://rpm.org/releases/rpm-$version_x
 extension=tar.bz2
 
 prefix=/app/.heroku/vendor
