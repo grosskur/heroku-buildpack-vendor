@@ -43,7 +43,7 @@ fi
 echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
 
-pushd /tmp/$dir
+pushd /tmp/$dir/nspr
 echo "Building $dir"
 ./configure --prefix=$prefix
 make -j$num_cpu
