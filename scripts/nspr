@@ -45,7 +45,7 @@ tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir/nspr
 echo "Building $dir"
-./configure --prefix=$prefix
+./configure --prefix=$prefix --enable-64bit --disable-x32
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 
