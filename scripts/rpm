@@ -46,7 +46,7 @@ tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir
 echo "Building $dir"
-./configure --prefix=$prefix
+env CPPFLAGS="-I$prefix/include/nspr" CFLAGS="-I$prefix/include/nspr" ./configure --prefix=$prefix
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 
