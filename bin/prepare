@@ -33,6 +33,7 @@ then
   - automake
   - bison
   - byacc
+  - bzip2
   - elfutils
   - flex
   - gcc
