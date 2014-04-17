@@ -48,11 +48,11 @@ pushd /tmp/$dir/nss
 echo "Building $dir"
 make -j1 USE_64=1 BUILD_OPT=1 NSPR_INCLUDE_DIR=$prefix/include/nspr NSPR_LIB_DIR=$prefix/lib
 
-mkdir -p $prefix/bin $prefix/lib $prefix/include/nss
-cp ../dist/Linux*.OBJ/bin/* $prefix/bin/
-cp ../dist/Linux*.OBJ/lib/* $prefix/lib/
-cp -L ../dist/public/nss/* $prefix/include/nss/
+mkdir -p ${dest_dir}$prefix/bin ${dest_dir}$prefix/lib ${dest_dir}$prefix/include/nss
+cp ../dist/Linux*.OBJ/bin/* ${dest_dir}$prefix/bin/
+cp ../dist/Linux*.OBJ/lib/* ${dest_dir}$prefix/lib/
+cp -L ../dist/public/nss/* ${dest_dir}$prefix/include/nss/
 
 # Delete unnecessary man pages
-rm -rf $dest_dir/app/.heroku/vendor/share
+rm -rf ${dest_dir}$prefix/share
 popd
