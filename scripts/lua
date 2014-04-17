@@ -58,7 +58,7 @@ includedir=\${prefix}/include
 Name: Lua
 Version: 5.2.3
 Description: The Lua interpreter
-Libs: -L\${libdir} -llua
+Libs: -L\${libdir} -llua -lm
 Cflags: -I\${includedir}
 EOT
 
