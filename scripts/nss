@@ -44,7 +44,12 @@ fi
 echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
 
-pushd /tmp/$dir/nss
+case "$version" in
+  3.14.*) sub_dir=mozilla/security/nss;;
+  *) sub_dir=nss;;
+esac
+
+pushd /tmp/$dir/$sub_dir
 echo "Building $dir"
 make -j1 USE_64=1 BUILD_OPT=1 NSPR_INCLUDE_DIR=$prefix/include/nspr NSPR_LIB_DIR=$prefix/lib
 
