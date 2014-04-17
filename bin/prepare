@@ -23,6 +23,11 @@ echo 'packages:'
 # Basic build dependencies
 if [ -f /etc/redhat-release ]
 then
+  case $(awk '{print $3}' < /etc/redhat-release) in
+    5.*)
+      echo '  - binutils220'
+      ;;
+  esac
   cat <<EOT
   - autoconf
   - automake
