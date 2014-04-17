@@ -43,6 +43,7 @@ then
   - patch
   - patchutils
   - pkgconfig
+  - readline-devel
   - tar
   - unzip
   - wget
