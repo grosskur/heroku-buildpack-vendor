@@ -20,18 +20,26 @@ cache_dir="$2"
 dest_dir="$3"
 version="$4"
 
+prefix=/app/.heroku/vendor
+archive_dir=$cache_dir/archives
+num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
+
 version_x=$(echo $version | sed 's/\.[0-9]*$/.x/')
 base_url=http://rpm.org/releases/rpm-$version_x
 extension=tar.bz2
-db_version=4.8.0
 
-prefix=/app/.heroku/vendor
 package=$scriptname
 dir=$package-$version
 archive=$package-$version.$extension
 url=$base_url/$archive
-archive_dir=$cache_dir/archives
-num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
+
+db_version=4.8.30
+db_base_url=http://download.oracle.com/berkeley-db
+db_extension=tar.gz
+db_package=db
+db_dir=$db_package-$db_version
+db_archive=$db_package-$db_version.$db_extension
+db_url=$db_base_url/$db_archive
 
 mkdir -p $archive_dir
 if [ ! -f $archive_dir/$archive ]
@@ -42,18 +50,27 @@ then
   mv $archive_dir/$archive.new $archive_dir/$archive
 fi
 
+if [ ! -f $archive_dir/$db_archive ]
+then
+  echo "Downloading $db_url"
+  rm -f $archive_dir/$db_archive.new
+  curl -fsLS "$db_url" > $archive_dir/$db_archive.new
+  mv $archive_dir/$db_archive.new $archive_dir/$db_archive
+fi
+
 echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
 
+echo "Extracting $db_archive"
+tar -C /tmp/$dir -xf $archive_dir/$db_archive
+
 pushd /tmp/$dir
 echo "Building $dir"
-curl -fsLSO http://download.oracle.com/berkeley-db/db-$db_version.tar.gz
-tar -xf db-$db_version.tar.gz
-ln -s db-$db_version db
+ln -s $db_archive db
 env CPPFLAGS="-I$prefix/include/nspr -I$prefix/include/nss" CFLAGS="-I$prefix/include/nspr -I$prefix/include/nss" ./configure --prefix=$prefix --without-lua
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 
 # Delete unnecessary man pages
-rm -rf $dest_dir/app/.heroku/vendor/share
+rm -rf ${dest_dir}$prefix/share
 popd
