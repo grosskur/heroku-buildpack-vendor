@@ -51,15 +51,15 @@ make install INSTALL_TOP=${dest_dir}$prefix
 mkdir -p ${dest_dir}$prefix/lib/pkgconfig
 cat <<EOT >${dest_dir}$prefix/lib/pkgconfig/lua.pc
 prefix=/app/.heroku/vendor
-exec_prefix=${prefix}
-libdir=${exec_prefix}/lib
-includedir=${prefix}/include
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib
+includedir=\${prefix}/include
 
 Name: Lua
 Version: 5.2.3
 Description: The Lua interpreter
-Libs: -L${libdir} -llua
-Cflags: -I${includedir}
+Libs: -L\${libdir} -llua
+Cflags: -I\${includedir}
 EOT
 
 # Delete unnecessary man pages
