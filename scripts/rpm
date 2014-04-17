@@ -67,7 +67,7 @@ tar -C /tmp/$dir -xf $archive_dir/$db_archive
 pushd /tmp/$dir
 echo "Building $dir"
 ln -s $db_dir $db_package
-env CPPFLAGS="-I$prefix/include -I$prefix/include/nspr -I$prefix/include/nss" ./configure --prefix=$prefix --without-lua
+env CPPFLAGS="-I$prefix/include -I$prefix/include/nspr -I$prefix/include/nss" ./configure --prefix=$prefix --with-lua
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 
