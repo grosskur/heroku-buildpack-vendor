@@ -46,7 +46,7 @@ tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir/nss
 echo "Building $dir"
-make -j$num_cpu USE_64=1 BUILD_OPT=1 NSPR_INCLUDE_DIR=$prefix/include/nspr NSPR_LIB_DIR=$prefix/lib
+make -j1 USE_64=1 BUILD_OPT=1 NSPR_INCLUDE_DIR=$prefix/include/nspr NSPR_LIB_DIR=$prefix/lib
 
 mkdir -p $prefix/bin $prefix/lib $prefix/include/nss
 cp ../dist/Linux*.OBJ/bin/* $prefix/bin/
