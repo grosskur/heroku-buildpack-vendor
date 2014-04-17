@@ -50,5 +50,5 @@ make -j$num_cpu
 make install DESTDIR=$dest_dir
 
 # Delete unnecessary man pages
-rm -rf $dest_dir/app/.heroku/vendor/share
+rm -rf ${dest_dir}$prefix/share/man*
 popd
