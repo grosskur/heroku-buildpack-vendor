@@ -20,10 +20,8 @@ cache_dir="$2"
 dest_dir="$3"
 version="$4"
 
-version_x=$(echo $version | sed 's/\.[0-9]*$/.x/')
-base_url=http://rpm.org/releases/rpm-$version_x
-extension=tar.bz2
-db_version=4.8.0
+base_url=ftp://ftp.astron.com/pub/file
+extension=tar.gz
 
 prefix=/app/.heroku/vendor
 package=$scriptname
@@ -47,10 +45,7 @@ tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir
 echo "Building $dir"
-curl -fsLSO http://download.oracle.com/berkeley-db/db-$db_version.tar.gz
-tar -xf db-$db_version.tar.gz
-ln -s db-$db_version db
-env CPPFLAGS="-I$prefix/include/nspr -I$prefix/include/nss" CFLAGS="-I$prefix/include/nspr -I$prefix/include/nss" ./configure --prefix=$prefix --without-lua
+./configure --prefix=$prefix
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 

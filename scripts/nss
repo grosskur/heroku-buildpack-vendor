@@ -20,10 +20,9 @@ cache_dir="$2"
 dest_dir="$3"
 version="$4"
 
-version_x=$(echo $version | sed 's/\.[0-9]*$/.x/')
-base_url=http://rpm.org/releases/rpm-$version_x
-extension=tar.bz2
-db_version=4.8.0
+version_und=$(echo $version | sed 's/\./_/g')
+base_url=https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_${version_und}_RTM/src
+extension=tar.gz
 
 prefix=/app/.heroku/vendor
 package=$scriptname
@@ -45,14 +44,14 @@ fi
 echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
 
-pushd /tmp/$dir
+pushd /tmp/$dir/nss
 echo "Building $dir"
-curl -fsLSO http://download.oracle.com/berkeley-db/db-$db_version.tar.gz
-tar -xf db-$db_version.tar.gz
-ln -s db-$db_version db
-env CPPFLAGS="-I$prefix/include/nspr -I$prefix/include/nss" CFLAGS="-I$prefix/include/nspr -I$prefix/include/nss" ./configure --prefix=$prefix --without-lua
-make -j$num_cpu
-make install DESTDIR=$dest_dir
+make -j$num_cpu USE_64=1 BUILD_OPT=1 NSPR_INCLUDE_DIR=$prefix/include/nspr NSPR_LIB_DIR=$prefix/lib
+
+mkdir -p $prefix/bin $prefix/lib $prefix/include/nss
+cp ../dist/Linux*.OBJ/bin/* $prefix/bin/
+cp ../dist/Linux*.OBJ/lib/* $prefix/lib/
+cp -L ../dist/public/nss/* $prefix/include/nss/
 
 # Delete unnecessary man pages
 rm -rf $dest_dir/app/.heroku/vendor/share
