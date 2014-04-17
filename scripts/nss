@@ -51,6 +51,11 @@ esac
 
 pushd /tmp/$dir/$sub_dir
 echo "Building $dir"
+# For CentOS 5.x
+if [ -d /usr/libexec/binutils220 ]
+then
+  export PATH=/usr/libexec/binutils220:$PATH
+fi
 make -j1 USE_64=1 BUILD_OPT=1 NSPR_INCLUDE_DIR=$prefix/include/nspr NSPR_LIB_DIR=$prefix/lib
 
 mkdir -p ${dest_dir}$prefix/bin ${dest_dir}$prefix/lib ${dest_dir}$prefix/include/nss
