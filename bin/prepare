@@ -46,5 +46,6 @@ then
   - tar
   - unzip
   - wget
+  - zlib-devel
 EOT
 fi
