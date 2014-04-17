@@ -48,6 +48,9 @@ echo "Building $dir"
 make linux
 make install INSTALL_TOP=${dest_dir}$prefix
 
+mkdir -p ${dest_dir}$prefix/lib/pkgconfig
+make pc INSTALL_TOP=$prefix > ${dest_dir}$prefix/lib/pkgconfig/lua.pc
+
 # Delete unnecessary man pages
 rm -rf ${dest_dir}$prefix/man
 popd
