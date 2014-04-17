@@ -46,7 +46,7 @@ export PATH=$build_dir/.heroku/vendor/bin:$PATH
 export CPPFLAGS=-I$build_dir/.heroku/vendor/include
 export LDFLAGS=-L$build_dir/.heroku/vendor/lib
 export LD_LIBRARY_PATH=$build_dir/.heroku/vendor/lib
-export PKG_CONFIG_PATH=$build_dir/.heroku/vendor/lib/pkg-config
+export PKG_CONFIG_PATH=$build_dir/.heroku/vendor/lib/pkgconfig
 
 while read -r line
 do
