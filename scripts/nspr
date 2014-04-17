@@ -43,7 +43,12 @@ fi
 echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
 
-pushd /tmp/$dir/nspr
+case "$version" in
+  4.9.*) sub_dir=mozilla/nsprpub;;
+  *) sub_dir=nspr;;
+esac
+
+pushd /tmp/$dir/$sub_dir
 echo "Building $dir"
 ./configure --prefix=$prefix --enable-64bit --disable-x32
 make -j$num_cpu
