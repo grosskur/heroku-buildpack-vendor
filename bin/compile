@@ -11,7 +11,7 @@ indent() {
 
 scriptname=$(basename $0)
 case $# in
-  2) :;;
+  2|3) :;;
   *) echo "$scriptname: usage: $scriptname BUILD_DIR CACHE_DIR" >&2; exit 2;;
 esac
 
