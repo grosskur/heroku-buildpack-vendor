@@ -20,14 +20,14 @@ cache_dir="$2"
 dest_dir="$3"
 version="$4"
 
-base_url=ftp://ftp.cyrusimap.org
+base_url=http://cyrusimap.org/releases
 extension=tar.gz
 
 prefix=/app/.heroku/vendor
 package=$scriptname
 dir=$package-$version
 archive=$package-$version.$extension
-url=$base_url/$package/$archive
+url=$base_url/$archive
 archive_dir=$cache_dir/archives
 num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
 patch_dir=$(dirname $0)/../patches
