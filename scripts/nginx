@@ -78,14 +78,6 @@ mod_url=https://github.com/openresty/$mod_name/archive/v$mod_version.$mod_extens
 download $mod_url $mod_archive
 extract /tmp $mod_archive
 
-mod_name=ngx_http_auth_request_module
-mod_version=662785733552
-mod_extension=tar.gz
-mod_archive=$mod_name-$mod_version.$mod_extension
-mod_url=http://mdounin.ru/hg/ngx_http_auth_request_module/archive/$mod_version.$mod_extension
-download $mod_url $mod_archive
-extract /tmp $mod_archive
-
 mod_name=nginx-upstream-fair
 mod_version=master
 mod_extension=tar.gz
@@ -129,6 +121,7 @@ echo "Building $dir"
   --with-md5=$prefix/include/openssl \
   --with-debug \
   --with-http_addition_module \
+  --with-http_auth_request_module \
   --with-http_gzip_static_module \
   --with-http_realip_module \
   --with-http_spdy_module \
@@ -138,7 +131,6 @@ echo "Building $dir"
   --add-module=/tmp/echo-nginx-module-0.51 \
   --add-module=/tmp/ngx_devel_kit-0.2.19 \
   --add-module=/tmp/set-misc-nginx-module-0.24 \
-  --add-module=/tmp/ngx_http_auth_request_module-662785733552 \
   --add-module=/tmp/nginx-upstream-fair-master \
   --add-module=/tmp/nginx-x-rid-header-master \
   --add-module=/tmp/ngx_pagespeed-1.8.31.4-beta
