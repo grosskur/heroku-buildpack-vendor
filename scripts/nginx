@@ -87,7 +87,7 @@ download $mod_url $mod_archive
 extract /tmp $mod_archive
 
 mod_name=ngx_pagespeed
-mod_version=1.7.30.3-beta
+mod_version=1.8.31.4-beta
 mod_extension=tar.gz
 mod_archive=$mod_name-$mod_version.$mod_extension
 mod_url=https://github.com/pagespeed/$mod_name/archive/v$mod_version.$mod_extension
@@ -95,12 +95,12 @@ download $mod_url $mod_archive
 extract /tmp $mod_archive
 
 dep_name=psol
-dep_version=1.7.30.3
+dep_version=1.8.31.4
 dep_extension=tar.gz
 dep_archive=$dep_name-$dep_version.$dep_extension
 dep_url=https://dl.google.com/dl/page-speed/$dep_name/$dep_version.$dep_extension
 download $dep_url $dep_archive
-extract /tmp/ngx_pagespeed-1.7.30.3-beta $dep_archive
+extract /tmp/ngx_pagespeed-1.8.31.4-beta $dep_archive
 
 pushd /tmp/$dir
 echo "Building $dir"
@@ -123,7 +123,7 @@ echo "Building $dir"
   --add-module=/tmp/ngx_http_auth_request_module-662785733552 \
   --add-module=/tmp/nginx-upstream-fair-master \
   --add-module=/tmp/nginx-x-rid-header-master \
-  --add-module=/tmp/ngx_pagespeed-1.7.30.3-beta
+  --add-module=/tmp/ngx_pagespeed-1.8.31.4-beta
 make -j$num_cpu
 mkdir -p ${dest_dir}$prefix/sbin
 install -m0755 objs/nginx ${dest_dir}$prefix/sbin
