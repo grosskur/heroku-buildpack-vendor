@@ -51,4 +51,14 @@ then
   - wget
   - zlib-devel
 EOT
+elif [ -f /etc/os-release ]
+then
+  id=$(awk -F= '$1 == "ID" {print $2}' /etc/os-release)
+  version_id=$(awk -F= '$1 == "VERSION_ID" {print $2}' /etc/os-release | sed 's/"//g')
+  case $id:$version_id in
+    ubuntu:14.04)
+      cat <<EOT
+  - build-essential
+EOT
+  esac
 fi
