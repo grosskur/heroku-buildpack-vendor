@@ -58,6 +58,7 @@ tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir
 echo "Building $dir"
+sed -i '/Wsuggest-attribute/d' buildlib/environment.mak.in
 env CPPFLAGS='-I/tmp/gtest/include' ./configure --prefix=$prefix
 make -j$num_cpu
 make install DESTDIR=$dest_dir
