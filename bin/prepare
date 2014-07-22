@@ -59,6 +59,7 @@ then
     ubuntu:14.04)
       cat <<EOT
   - build-essential
+  - libgtest-dev
 EOT
   esac
 fi
