@@ -31,7 +31,17 @@ url=$base_url/$archive
 archive_dir=$cache_dir/archives
 num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
 
+gtest_archive=gtest-1.7.0.tar.gz
+gtest_url=$base_url/$gtest_archive
+
 mkdir -p $archive_dir
+if [ ! -f $archive_dir/$gtest_archive ]
+then
+  echo "Downloading $gtest_url"
+  rm -f $archive_dir/$gtest_archive.new
+  curl -fsLS "$url" > $archive_dir/$gtest_archive.new
+  mv $archive_dir/$gtest_archive.new $archive_dir/$gtest_archive
+fi
 if [ ! -f $archive_dir/$archive ]
 then
   echo "Downloading $url"
@@ -40,12 +50,15 @@ then
   mv $archive_dir/$archive.new $archive_dir/$archive
 fi
 
+echo "Extracting $gtest_archive"
+mkdir -p /tmp/gtest
+tar -C /tmp/gtest -xf $archive_dir/$gtest_archive
 echo "Extracting $archive"
 tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir
 echo "Building $dir"
-./configure --prefix=$prefix
+env CPPFLAGS='-I/tmp/gtest/include' ./configure --prefix=$prefix
 make -j$num_cpu
 make install DESTDIR=$dest_dir
 
