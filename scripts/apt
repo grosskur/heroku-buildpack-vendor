@@ -20,20 +20,30 @@ cache_dir="$2"
 dest_dir="$3"
 version="$4"
 
+base_url=http://s3.amazonaws.com/cb-mirror
+extension=tar.gz
+
 prefix=/app/.heroku/vendor
 package=$scriptname
-url=http://anonscm.debian.org/git/apt/$package.git
-dir=$package
+dir=$package-$version
+archive=$package-$version.$extension
+url=$base_url/$archive
+archive_dir=$cache_dir/archives
 num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
 
-echo "Cloning $url"
-git clone $url /tmp/$dir
+mkdir -p $archive_dir
+if [ ! -f $archive_dir/$archive ]
+then
+  echo "Downloading $url"
+  rm -f $archive_dir/$archive.new
+  curl -fsLS "$url" > $archive_dir/$archive.new
+  mv $archive_dir/$archive.new $archive_dir/$archive
+fi
+
+echo "Extracting $archive"
+tar -C /tmp -xf $archive_dir/$archive
 
 pushd /tmp/$dir
-
-echo "Checking out $version"
-git checkout $version
-
 echo "Building $dir"
 ./configure --prefix=$prefix
 make -j$num_cpu
