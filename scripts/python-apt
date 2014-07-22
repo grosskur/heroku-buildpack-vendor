@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# fail fast
+set -o errexit
+set -o nounset
+set -o pipefail
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+scriptname=$(basename $0)
+case $# in
+  4) :;;
+  *) echo "$scriptname: usage: $scriptname BUILD_DIR CACHE_DIR DEST_DIR VERSION" >&2; exit 2;;
+esac
+
+build_dir="$1"
+cache_dir="$2"
+dest_dir="$3"
+version="$4"
+
+prefix=/app/.heroku/vendor
+package=$scriptname
+url=http://anonscm.debian.org/git/apt/$package.git
+dir=$package
+num_cpu=$(grep -c ^bogomips /proc/cpuinfo)
+
+echo "Cloning $url"
+git clone $url /tmp/$dir
+
+pushd /tmp/$dir
+
+echo "Checking out $version"
+git checkout $version
+
+echo "Building $dir"
+python setup.py build
+python setup.py install --prefix=$prefix --root=$dest_dir
+
+popd
