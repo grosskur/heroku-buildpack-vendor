@@ -39,7 +39,7 @@ if [ ! -f $archive_dir/$gtest_archive ]
 then
   echo "Downloading $gtest_url"
   rm -f $archive_dir/$gtest_archive.new
-  curl -fsLS "$url" > $archive_dir/$gtest_archive.new
+  curl -fsLS "$gtest_url" > $archive_dir/$gtest_archive.new
   mv $archive_dir/$gtest_archive.new $archive_dir/$gtest_archive
 fi
 if [ ! -f $archive_dir/$archive ]
