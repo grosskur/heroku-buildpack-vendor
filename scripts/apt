@@ -62,6 +62,7 @@ sed -i '/Wsuggest-attribute/d' buildlib/environment.mak.in
 sed -i -e '/$(MAKE) -C doc $@/d' -e '/$(MAKE) -C po $@/d' -e '/$(MAKE) -C test $@/d' Makefile
 env CPPFLAGS='-I/tmp/gtest/include' ./configure --prefix=$prefix
 make -j$num_cpu
-make install DESTDIR=$dest_dir
+mkdir -p ${dest_dir}$prefix/lib
+cp -a bin/libapt-pkg.so* bin/libapt-inst.so* ${dest_dir}$prefix/lib
 
 popd
